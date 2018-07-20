@@ -11,6 +11,7 @@
 
 - include: packages.yml
 - include: pki.yml
+  when: build_from_scratch
 - include: openvpn.yml
 - include: dns.yml
 - include: harden_sysctl.yml
