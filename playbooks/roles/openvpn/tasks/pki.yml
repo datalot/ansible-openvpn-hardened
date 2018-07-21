@@ -26,7 +26,8 @@
     - name: OpenVPN | PKI | Set common name variable
       set_fact:
         openvpn_server_common_name: "{{ openvpn_server_common_name_result.stdout }}"
-  when: openvpn_server_common_name not defined
+        
+  when: openvpn_server_common_name is not defined
 
 - name: OpenVPN | PKI | Generate CA password
   shell: echo "$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c15)"
