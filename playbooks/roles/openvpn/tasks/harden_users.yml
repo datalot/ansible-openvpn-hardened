@@ -61,7 +61,7 @@
     mode: 0750
 
 - name: OpenVPN | Harden | Add or update authorized key
-  action: authorized_key user={{ sudo_username }} key="{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+  action: authorized_key user={{ sudo_username }} key="{{ lookup('file', openvpn_ssh_identity_file ) }}"
 
 # Password setting used here is similar to running 'passwd -l root' which just
 # prefixes the hashed password in /etc/shadow with an '!', making it an invalid hash
