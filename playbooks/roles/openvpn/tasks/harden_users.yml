@@ -3,26 +3,34 @@
   set_fact:
     sudo_user_comment: "ansible-openvpn-hardened sudo user"
 
-- name: OpenVPN | Harden | Check for existing user
-  shell: "grep \"{{ sudo_user_comment }}\" /etc/passwd | awk -F: '{print $1}'"
-  changed_when: false
-  register: sudo_user_check
-  failed_when: false
+- name: OpenVPN | Harden | Configure username if not provided
+  block:
+    - name: OpenVPN | Harden | Check for existing user
+      shell: "grep \"{{ sudo_user_comment }}\" /etc/passwd | awk -F: '{print $1}'"
+      changed_when: false
+      register: sudo_user_check
+      failed_when: false
 
-- name: OpenVPN | Harden | Generate sudo username
-  shell: grep -v -P "[\x80-\xFF]" {{ path_dict }} | sed -e "s/'//" | shuf -n 1 | xargs | sed -e 's/ /-/g'
-  register: generated_sudo_username
-  when: sudo_user_check.stdout == ""
+    - name: OpenVPN | Harden | Generate sudo username
+      shell: grep -v -P "[\x80-\xFF]" {{ path_dict }} | sed -e "s/'//" | shuf -n 1 | xargs | sed -e 's/ /-/g'
+      register: generated_sudo_username
+      when: sudo_user_check.stdout == ""
 
-- name: OpenVPN | Harden | Set sudo username variable
+    - name: OpenVPN | Harden | Set sudo username variable
+      set_fact:
+        sudo_username: "{{ sudo_user_check.stdout }}"
+      when: sudo_user_check.stdout != ""
+
+    - name: OpenVPN | Harden | Set sudo username variable
+      set_fact:
+        sudo_username: "{{ generated_sudo_username.stdout }}"
+      when: sudo_user_check.stdout == ""
+  when: openvpn_username is not defined
+
+- name: OpenVPN | Harden | Set username
   set_fact:
-    sudo_username: "{{ sudo_user_check.stdout }}"
-  when: sudo_user_check.stdout != ""
-
-- name: OpenVPN | Harden | Set sudo username variable
-  set_fact:
-    sudo_username: "{{ generated_sudo_username.stdout }}"
-  when: sudo_user_check.stdout == ""
+    sudo_username: "{{ openvpn_username }}"
+  when: openvpn_username is defined
 
 # This is complicated to ensure the PAM password requirements set in harden_password.yml are met
 - name: OpenVPN | Harden | Generate sudo user password
