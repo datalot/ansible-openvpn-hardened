@@ -60,6 +60,7 @@ dhparams_size: "{{ openvpn_key_size }}"
 dhparams_location: "{{ openvpn_path_pki }}/dh.pem"
 openvpn_crl: "{{ openvpn_path_pki }}/crl.pem"
 openvpn_server_common_name_file: "{{ openvpn_path }}/openvpn_server_common_name"
+openvpn_ssh_identity_file: "~/.ssh/id_rsa.pub"
 
 openvpn_server: "{{ inventory_hostname }}"
 
