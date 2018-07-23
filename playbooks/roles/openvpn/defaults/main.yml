@@ -1,6 +1,8 @@
 ---
 ssh_on_vpn_only: true
 
+build_from_scratch: true
+
 openvpn_key_country:  "US"
 openvpn_key_province: "California"
 openvpn_key_city: "Beverly Hills"
