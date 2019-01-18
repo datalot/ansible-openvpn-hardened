@@ -1,8 +1,17 @@
 dev tun-{{ item.proto }}-{{ item.port }}
 server {{ item.mask }}
 push "dhcp-option DNS {{ item.gateway }}"
+push "dhcp-option DOMAIN {{ openvpn_internal_domain_name }}"
+
 proto {{ item.proto }}
 port {{ item.port }}
+
+push explicit-exit-notify
+push "topology subnet"
+push "comp-lzo yes"
+push "redirect-private def1"
+push "redirect-private bypass-dhcp"
+push "redirect-private autolocal"
 
 ca {{ openvpn_ca_cert }}
 cert {{ path_server_cert }}
@@ -17,11 +26,6 @@ push "redirect-gateway def1"
 push "route {{ route }}"
 {% endfor %}
 {% endif %}
-
-
-# Fix for the Windows 10 DNS leak described here:
-# https://community.openvpn.net/openvpn/ticket/605
-push block-outside-dns
 
 remote-cert-tls client
 keepalive 10 120

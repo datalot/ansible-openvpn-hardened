@@ -28,7 +28,6 @@ deny_failed_login_account_files: "{{ deny_failed_login_auth_files }}"
 
 
 os_family_specific_pre:
-  - epel-release
   - yum-cron
   - yum-utils
   - iptables-services
